@@ -32,7 +32,7 @@ input:focus {
   background-color: #ccc;
 }
 
-.form + .button {
+.form+.button {
   margin-top: 2rem;
 }
 
@@ -54,6 +54,20 @@ input:focus {
   padding: 8px 4px;
   margin-bottom: 1rem;
 }
+
 .logo {
   font-size: 25px;
+}
+
+.inline-block {
+  display: inline-block;
+  color: black;
+  color: #fff;
+  margin-top: 2rem;
+}
+
+.main__page--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
 }

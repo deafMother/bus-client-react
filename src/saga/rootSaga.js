@@ -73,7 +73,7 @@ function* login(action) {
       status: true
     });
   } catch (err) {
-    console.log(err.message);
+    console.log(err.response.data.message);
     yield put({
       type: "LOGGEDIN",
       error: true,
@@ -163,6 +163,23 @@ function* verifyLoginStatus() {
     });
   }
 }
+function* checkBusStatusForDate(action) {
+  //console.log(action);
+  try {
+    let { start, to, date } = action.data;
+    //http://localhost:3000/bookBus/findBus?startAt=Gangtok&destination=Rumtek&date=2019-12-08
+    let reqUrl = `/bookBus/findBus?startAt=${start}&destination=${to}&date=${date}`;
+    const response = yield axios.get(reqUrl, action.data);
+    yield put({
+      // dispatching the action, this is dispatched to the reducers
+      type: "FETCH_BUSSES_FORDATE",
+      error: false,
+      data: response.data.data.booking.busses
+    });
+  } catch (err) {
+    console.log(err.response.data.message);
+  }
+}
 
 // watch for the action types
 function* watchSaga() {
@@ -173,6 +190,7 @@ function* watchSaga() {
   yield takeEvery("CHECK_LOGIN_STATUS", verifyLoginStatus);
   yield takeEvery("GET_USER_INFO", getUserInfo);
   yield takeEvery("GET_ALL_BUS", getAllBusInfo);
+  yield takeEvery("CHECK_BUS_JOURNEY_STATUS", checkBusStatusForDate);
 }
 
 // only export the root sage

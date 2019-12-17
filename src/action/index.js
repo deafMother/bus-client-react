@@ -44,3 +44,15 @@ export const checkLoginStatus = () => {
     type: "CHECK_LOGIN_STATUS"
   };
 };
+
+/*  
+  search for bus between start and destination
+*/
+
+export const checkBusJouurneySatus = formValue => {
+  // console.log(formValue);
+  return {
+    type: "CHECK_BUS_JOURNEY_STATUS",
+    data: formValue
+  };
+};
