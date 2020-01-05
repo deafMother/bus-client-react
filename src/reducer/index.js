@@ -1,12 +1,24 @@
 import { reducer as formReducer } from "redux-form";
 import { combineReducers } from "redux";
-import { loggedIn } from "./loggedInReducer";
-import { bussesForDate } from "./busStatusForDate";
+import { loggedIn, userRole } from "./loggedInReducer";
+import { bussesForDate, busRoute } from "./busStatusForDate";
+import { bookBusSeats, PopUp } from "./busSeatBookingStatus";
+import { fetchUserInfo } from "./fetchUserReducer";
+import { allBusReducer, allBusInfoReducerAdmin } from "./allBusReducer";
+import { setSelectedBusReducer } from './setSelectedBusReducer';
 
 const rootReducer = combineReducers({
   form: formReducer,
   loggedIn,
-  bussesForDate
+  role: userRole,
+  bussesForDate,
+  busRoute,
+  bookBusSeats,
+  PopUp,
+  userInfo: fetchUserInfo,
+  busses: allBusReducer,
+  allBusInfo: allBusInfoReducerAdmin,
+  selectedBus: setSelectedBusReducer
 });
 
 export default rootReducer;

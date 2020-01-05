@@ -10,3 +10,16 @@ export const bussesForDate = (state = initialState, action) => {
       return state;
   }
 };
+
+export const busRoute = (state = {}, action) => {
+  switch (action.type) {
+    case "FETCH_BUSSES_FORDATE":
+      return {
+        startAt: action.startAt,
+        destination: action.destination,
+        date: action.date
+      };
+    default:
+      return state;
+  }
+};

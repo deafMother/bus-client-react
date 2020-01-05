@@ -10,3 +10,15 @@ export const loggedIn = (state = initialState, action) => {
       return state;
   }
 };
+
+/* 
+    reducer to set user role
+*/
+export const userRole = (state = "user", action) => {
+  switch (action.type) {
+    case "USER_ROLE":
+      return action.role;
+    default:
+      return state;
+  }
+};

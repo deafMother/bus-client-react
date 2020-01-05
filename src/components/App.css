@@ -4,6 +4,7 @@
 
 .App {
   padding: 0 6px;
+  position: relative;
 }
 
 .form-container {
@@ -70,4 +71,10 @@ input:focus {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 2rem;
+}
+
+.main-button {
+  margin-top: 2rem;
+  display: inline-block;
+  font-size: 2rem;
 }

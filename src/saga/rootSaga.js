@@ -1,7 +1,10 @@
 import { put, takeEvery, all } from "redux-saga/effects";
 
-import history from "../history";
+// import history from "../history";
 import axios from "../api/index";
+import history from "../history";
+import { getRepoBusses, getBusInfoAdmin } from "./getRepoBusses";
+import { addNewBus, editBus } from "./addBusReducer";
 
 const getJWT = () => {
   let jwtToken = localStorage.getItem("token-bus-jwt");
@@ -146,13 +149,21 @@ function* verifyLoginStatus() {
   try {
     const config = getJWT();
     const response = yield axios.get("/user/checkLoginStatus", config); // this is the get all users request
-    //console.log(response);
+    console.log(response.data);
+    const role = response.data.data.data.role;
+    console.log(role);
     yield put({
       // dispatching the action, this is dispatched to the reducers
       type: "LOGGEDIN",
       error: false,
       token: response.data.token,
+      role: role,
       status: true
+    });
+    yield put({
+      // dispatching the action, this is dispatched to the reducers
+      type: "USER_ROLE",
+      role
     });
   } catch (err) {
     yield put({
@@ -170,14 +181,103 @@ function* checkBusStatusForDate(action) {
     //http://localhost:3000/bookBus/findBus?startAt=Gangtok&destination=Rumtek&date=2019-12-08
     let reqUrl = `/bookBus/findBus?startAt=${start}&destination=${to}&date=${date}`;
     const response = yield axios.get(reqUrl, action.data);
+
     yield put({
       // dispatching the action, this is dispatched to the reducers
       type: "FETCH_BUSSES_FORDATE",
       error: false,
-      data: response.data.data.booking.busses
+      data: response.data.data.booking.busses,
+      startAt: start,
+      destination: to,
+      date
+    });
+    yield put({
+      type: "POPUP",
+      error: false,
+      message: "Busses Found"
     });
   } catch (err) {
-    console.log(err.response.data.message);
+    yield put({
+      type: "POPUP",
+      error: true,
+      message: err.response.data.message
+    });
+  }
+}
+
+function* bookBusSeats(action) {
+  let config = getJWT();
+  try {
+    let response = yield axios.post("/bookBus/bookSeat", action.data, config);
+    console.log(response);
+
+    yield put({
+      type: "BOOK_BUS_SEATS",
+      data: response.data.data,
+      status: "Success"
+    });
+    yield put({
+      type: "POPUP",
+      error: false,
+      message: "Seats Booked . Please Check Bokkings For more Info"
+    });
+    //  redirect ot another page if successfully booked
+    history.push("/succesFullyBooked");
+  } catch (err) {
+    yield put({
+      type: "POPUP",
+      error: true,
+      message: err.response.data.message
+    });
+  }
+}
+
+/* 
+  fetch user info
+*/
+function* fetchUserInfo() {
+  try {
+    ///user/getMe
+    let config = getJWT();
+    let response = yield axios.get("/user/getMe", config);
+    console.log(response.data.data.user);
+    yield put({
+      type: "FETCH_USER_INFO",
+      data: response.data.data.user,
+      status: "Success"
+    });
+  } catch (err) {
+    yield put({
+      type: "POPUP",
+      error: true,
+      message: err.response.data.message
+    });
+  }
+}
+
+/* 
+    send seat cancellation request
+
+*/
+function* sendBusCancelReq(action) {
+  try {
+    let config = getJWT();
+    console.log(action.data);
+    let response = yield axios.post("/bookBus/cancelSeat", action.data, config);
+    console.log(response.data);
+    yield put({
+      type: "POPUP",
+      error: false,
+      message: "Seats Cancelled Successfully"
+    });
+    history.push("/");
+  } catch (err) {
+    console.log(err.response);
+    yield put({
+      type: "POPUP",
+      error: true,
+      message: err.response.data.message
+    });
   }
 }
 
@@ -191,6 +291,13 @@ function* watchSaga() {
   yield takeEvery("GET_USER_INFO", getUserInfo);
   yield takeEvery("GET_ALL_BUS", getAllBusInfo);
   yield takeEvery("CHECK_BUS_JOURNEY_STATUS", checkBusStatusForDate);
+  yield takeEvery("BOOK_SEATS", bookBusSeats);
+  yield takeEvery("GET_USER_INFO_BOOKING", fetchUserInfo);
+  yield takeEvery("CANCEL_BOOKED_SEATS", sendBusCancelReq);
+  yield takeEvery("GET_ALL_BUSSES_IN_REPO", getRepoBusses);
+  yield takeEvery("ADD_NEW_BUS_TO_COLLECTION", addNewBus);
+  yield takeEvery("EDIT_BUS_IN_COLLECTION", editBus);
+  yield takeEvery("BUS_FOR_ADMIN", getBusInfoAdmin);
 }
 
 // only export the root sage

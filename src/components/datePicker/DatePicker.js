@@ -14,6 +14,7 @@ export default class DatePicker extends React.Component {
 
   handleDayClick(day) {
     this.setState({ selectedDay: day });
+    console.log(day.toISOString().split("T")[0]);
     this.props.setDate(day.toISOString().split("T")[0]);
   }
 

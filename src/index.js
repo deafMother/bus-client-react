@@ -11,6 +11,7 @@ import App from "./components/App";
 import history from "./history";
 import reducer from "./reducer";
 import rootSaga from "./saga/rootSaga";
+import PopUp from "./components/PopUp/PupUp";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -23,11 +24,12 @@ const store = createStore(
 sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Router history={history}>
-      <App />
-    </Router>
-  </Provider>,
-
+  <div>
+    <Provider store={store}>
+      <Router history={history}>
+        <App />
+      </Router>
+    </Provider>
+  </div>,
   document.getElementById("root")
 );

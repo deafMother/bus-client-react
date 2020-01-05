@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { getAllBus, logOut, checkLoginStatus } from "../../action";
 import history from "../../history";
+import "./header.css";
 
 function Header(props) {
   useEffect(() => {
@@ -15,15 +16,25 @@ function Header(props) {
       </div>
       <div>
         {props.loggedIn ? (
-          <span
-            className="button"
-            onClick={() => {
-              props.logOut();
-              history.push("/");
-            }}
-          >
-            Logout
-          </span>
+          <div className="flex">
+            <span
+              className="user-logo"
+              onClick={() => {
+                history.push("/userBookings");
+              }}
+            >
+              <i className="fas fa-user-circle"></i>
+            </span>
+            <span
+              className="button"
+              onClick={() => {
+                props.logOut();
+                history.push("/");
+              }}
+            >
+              Logout
+            </span>
+          </div>
         ) : (
           <span
             className="button"
@@ -38,7 +49,7 @@ function Header(props) {
 }
 
 let mapStateToProps = state => {
-  console.log(state.loggedIn);
+  // console.log(state.loggedIn);
   return {
     loggedIn: state.loggedIn
   };
